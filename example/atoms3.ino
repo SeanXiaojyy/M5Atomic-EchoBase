@@ -7,7 +7,7 @@ M5EchoBase echobase;
 extern const uint8_t music_pcm_start[] asm("_binary_canon_pcm_start");
 extern const uint8_t music_pcm_end[]   asm("_binary_canon_pcm_end");
 
-extern "C" void app_main()
+void setup()
 {
 	echobase.init();
     echobase.setSpeakerVolume(50);
@@ -18,4 +18,9 @@ extern "C" void app_main()
         echobase.record(buffer, 1024 * 128);
         echobase.play(buffer, 1024 * 128);
     }
+}
+
+void loop()
+{
+	
 }
