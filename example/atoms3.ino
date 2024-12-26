@@ -4,14 +4,10 @@
 
 M5EchoBase echobase;
 
-extern const uint8_t music_pcm_start[] asm("_binary_canon_pcm_start");
-extern const uint8_t music_pcm_end[]   asm("_binary_canon_pcm_end");
-
 void setup()
 {
 	echobase.init();
     echobase.setSpeakerVolume(50);
-    echobase.play(music_pcm_start, music_pcm_end - music_pcm_start);
     uint8_t *buffer = (uint8_t *)malloc(1024 * 128);
     while (1)
     {
