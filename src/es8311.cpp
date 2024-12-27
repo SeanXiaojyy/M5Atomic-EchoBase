@@ -144,7 +144,7 @@ static const struct _coeff_div coeff_div[] = {
 
 static TwoWire* _wire = &Wire;
 
-static const char *TAG = "ES8311";
+static const char *TAG __attribute__((unused)) = "ES8311";
 
 void es8311_set_twowire(TwoWire* wire)
 {
@@ -155,7 +155,6 @@ esp_err_t es8311_write_reg(es8311_handle_t dev, uint8_t reg_addr, uint8_t data)
 {
     es8311_dev_t *es = (es8311_dev_t *) dev;
     const uint8_t write_buf[2] = {reg_addr, data};
-    // return i2c_master_write_to_device(es->port, es->dev_addr, write_buf, sizeof(write_buf), pdMS_TO_TICKS(1000));
     _wire->beginTransmission(es->dev_addr);
     _wire->write(write_buf, sizeof(write_buf));
     _wire->endTransmission();
@@ -165,11 +164,10 @@ esp_err_t es8311_write_reg(es8311_handle_t dev, uint8_t reg_addr, uint8_t data)
 static inline esp_err_t es8311_read_reg(es8311_handle_t dev, uint8_t reg_addr, uint8_t *reg_value)
 {
     es8311_dev_t *es = (es8311_dev_t *) dev;
-    // return i2c_master_write_read_device(es->port, es->dev_addr, &reg_addr, 1, reg_value, 1, pdMS_TO_TICKS(1000));
     _wire->beginTransmission(es->dev_addr);
     _wire->write(&reg_addr, 1);
     _wire->endTransmission();
-    _wire->requestFrom(es->dev_addr, 1);
+    _wire->requestFrom(static_cast<uint16_t>(es->dev_addr), static_cast<uint8_t>(1));
     *reg_value = _wire->read();
     return ESP_OK;
 }
