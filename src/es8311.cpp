@@ -352,7 +352,7 @@ esp_err_t es8311_set_adc_volume(es8311_handle_t dev, uint8_t volume)
         reg17 = ((volume) * 256 / 100) - 1;
     }
 
-    return es8311_write_reg(dev, ES8311_ADC_REG17, reg17); // Set ADC gain @todo move this to ADC config section
+    return es8311_write_reg(dev, ES8311_ADC_REG17, reg17); 
 }
 
 esp_err_t es8311_init(es8311_handle_t dev, const es8311_clock_config_t *const clk_cfg, const es8311_resolution_t res_in, const es8311_resolution_t res_out)

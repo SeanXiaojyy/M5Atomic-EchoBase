@@ -198,7 +198,15 @@ esp_err_t es8311_microphone_config(es8311_handle_t dev, bool digital_mic);
  */
 esp_err_t es8311_microphone_pgagain_config(es8311_handle_t dev, bool digital_mic, uint8_t pga_gain);
 
-
+/**
+ * @brief Set ADC volume
+ * 
+ * @param dev ES8311 handle
+ * @param[in] volume Volume level (0-100)
+ * @return  
+ *    - ESP_OK success
+ *    - Else fail
+ */
 esp_err_t es8311_set_adc_volume(es8311_handle_t dev, uint8_t volume);
 
 /**

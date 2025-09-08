@@ -12,22 +12,15 @@
 #include <FS.h>
 #include "es8311.h"
 
-// 判断 ESP32 Arduino core 版本
 #ifdef ESP_IDF_VERSION
-  // 已定义，检查版本
 #if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0))
-// #if 0
-    // 比如: i2s_write(...)
     #define USE_NEW_I2S_API 1
     #include <ESP_I2S.h>
-
-  #else
-    // 旧版本 API
+#else
     #define USE_NEW_I2S_API 0
     #include "driver/i2s.h"
   #endif
 #else
-  // 没定义，默认用旧版
   #define USE_NEW_I2S_API 0
 #endif
 
