@@ -11,14 +11,38 @@
 #include <Wire.h>
 #include <FS.h>
 #include "es8311.h"
-#include "driver/i2s.h"
+
+// 判断 ESP32 Arduino core 版本
+#ifdef ESP_IDF_VERSION
+  // 已定义，检查版本
+#if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0))
+// #if 0
+    // 比如: i2s_write(...)
+    #define USE_NEW_I2S_API 1
+    #include <ESP_I2S.h>
+
+  #else
+    // 旧版本 API
+    #define USE_NEW_I2S_API 0
+    #include "driver/i2s.h"
+  #endif
+#else
+  // 没定义，默认用旧版
+  #define USE_NEW_I2S_API 0
+#endif
+
+
 
 /**
  * @brief Class to manage M5EchoBase operations including audio input/output and codec control.
  */
 class M5EchoBase {
 public:
+#if USE_NEW_I2S_API
+    M5EchoBase() : es_handle(nullptr) {};
+#else
     M5EchoBase(i2s_port_t i2s_num = I2S_NUM_0) : es_handle(nullptr), i2s_num(i2s_num) {};
+#endif
     ~M5EchoBase() {};
 
     /**
@@ -52,6 +76,23 @@ public:
      * @return bool True if gain was set successfully, false if the operation failed.
      */
     bool setMicGain(es8311_mic_gain_t gain);
+
+    /**
+     * @brief Sets the microphone PGA gain.
+     *
+     * @param digital_mic Set to true for digital microphone, false for analog.
+     * @param pga_gain PGA gain value.
+     * @return bool True if PGA gain was set successfully, false if the operation failed.
+     */
+    bool setMicPGAGain(bool digital_mic, uint8_t pga_gain);
+
+    /**
+     * @brief Sets the microphone ADC volume.
+     *
+     * @param volume Volume level (0-100).
+     * @return bool True if volume was set successfully, false if the operation failed.
+     */
+    bool setMicAdcVolume(uint8_t volume);
 
     /**
      * @brief Mutes or unmutes the speaker.
@@ -121,9 +162,13 @@ private:
     es8311_handle_t es_handle;
 
     // I2S configuration
+  #if USE_NEW_I2S_API
+    I2SClass I2S;
+  #else
     i2s_port_t i2s_num;
     i2s_config_t i2s_cfg;
     i2s_pin_config_t i2s_pin_cfg;
+  #endif
 
     // I2C and I2S pin numbers
     int _i2c_sda;
